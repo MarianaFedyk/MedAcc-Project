@@ -1,0 +1,53 @@
+body{
+    background-color: #5BBCD9;
+    margin: 0px;
+}
+
+header{
+    background-color: #5BBCD9;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-left: 5%;
+    margin-right: 5%;
+    color: #ffffff;
+}
+
+.logo{
+    display: flex;
+    align-items: center;
+    padding: 2%;
+}
+
+img.user-icon{
+    width: 50px;
+}
+img.pharma-icon{
+    width: 50px;
+}
+
+.body{
+    background-color: #ffffff;
+    display: grid;
+    align-items: start; 
+    height: 100vh;
+    border-top-left-radius: 10%;
+    border-top-right-radius: 10%;
+    color: #5BBCD9;
+    justify-items: center;
+    
+}
+
+.title{
+    display: flex;
+    justify-content: center; 
+    align-items: center;     
+    text-align: center;      
+    width: 100%;
+}
+
+p{
+    font-size: 40px;
+    margin: 10%;
+}
+

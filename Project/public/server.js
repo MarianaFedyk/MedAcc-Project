@@ -10,13 +10,15 @@ const DATA_FILE = path.join(__dirname, 'medecine.json');
 
 app.use(cors());
 app.use(bodyParser.json());
-app.use(express.static(__dirname)); 
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'LogIn.html'));
+});
 
-// Ендпоінт для отримання та збереження даних
+app.use(express.static(__dirname));
+
 app.post('/add-medicine', (req, res) => {
     const newMedicine = req.body;
 
-    // Читаємо існуючий файл
     fs.readFile(DATA_FILE, 'utf8', (err, data) => {
         let json = [];
         
@@ -35,6 +37,78 @@ app.post('/add-medicine', (req, res) => {
     });
 });
 
+
+
+const USERS_FILE = path.join(__dirname, 'users.json');
+
+app.use(cors());
+app.use(express.json());
+app.use(express.static(__dirname));
+
+
+
+app.post('/register', (req, res) => {
+    const newUser = req.body;
+
+    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
+        let users = [];
+
+        if (!err && data) {
+            try {
+                users = JSON.parse(data);
+            } catch {
+                users = [];
+            }
+        }
+
+        const userExists = users.find(u => u.login === newUser.login);
+        if (userExists) {
+            return res.status(400).send({ message: 'Такий логін вже існує' });
+        }
+
+        users.push({
+    login: newUser.login?.trim(),
+    password: newUser.password?.trim()
+});
+
+        fs.writeFile(USERS_FILE, JSON.stringify(users, null, 2), (err) => {
+            if (err) {
+                return res.status(500).send({ message: 'Помилка запису' });
+            }
+
+            res.send({ message: 'Реєстрація успішна' });
+        });
+    });
+});
+
 app.listen(PORT, () => {
-    console.log(`Сервер запущено: http://localhost:${PORT}`);
+    console.log(`Сервер: http://localhost:${PORT}`);
+});
+
+
+app.post('/login', (req, res) => {
+    const { login, password } = req.body;
+
+    fs.readFile(USERS_FILE, 'utf8', (err, data) => {
+        let users = [];
+
+        if (!err && data) {
+            try {
+                users = JSON.parse(data);
+            } catch {
+                users = [];
+            }
+        }
+
+        const user = users.find(u =>
+    String(u.login).trim() === String(login).trim() &&
+    String(u.password).trim() === String(password).trim()
+);
+
+        if (!user) {
+            return res.status(401).json({ message: 'Неправильний логін або пароль' });
+        }
+
+        res.json({ message: 'Вхід успішний' });
+    });
 });

@@ -1,0 +1,26 @@
+[
+  {
+    "image": "https://apteka911.ua/content/shop/products/27129/photos/68118-27129-big-1500x1500-4e42.jpg",
+    "category": "Жарознижуючі",
+    "activeSubstances": "Парацетамол",
+    "form": "Капсули",
+    "dosage": "500мг",
+    "packQuantity": "10",
+    "stockQuantity": "50",
+    "tradeName": "Парцетамол",
+    "price": "80",
+    "indications": "Для зниження температури"
+  },
+  {
+    "image": "https://i.podorozhnyk.com/products/4e9089fb-23a8-41e7-b664-4336aee42d10-large.webp",
+    "category": "Жарознижуючі",
+    "activeSubstances": "Ібупрофен",
+    "form": "Капсули",
+    "dosage": "400мг",
+    "packQuantity": "20",
+    "stockQuantity": "70",
+    "tradeName": "Ібупрофен",
+    "price": "87",
+    "indications": "Від температури"
+  }
+]

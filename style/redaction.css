@@ -168,6 +168,22 @@ input:focus{
     box-shadow: 0 0 3px #5BBCD9;
 }
 
+select {
+    border: 1px solid #5BBCD9;
+    border-radius: 6px;
+    padding: 8px;
+    font-family: "Marmelad";
+    color: #5BBCD9;
+    font-size: 14px;
+    transition: 0.3s;
+}
+
+select:focus{
+    outline: none;
+    transform: scale(1);
+    box-shadow: 0 0 3px #5BBCD9;
+}
+
 .div10 {
     border: 2px solid #5BBCD9;
     border-radius: 10px;

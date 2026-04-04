@@ -2,6 +2,7 @@ body {
     background-color: #5BBCD9;
     margin: 0;
     font-family: "Marmelad", sans-serif;
+    color: #5BBCD9;
 }
 
 .header {
@@ -182,8 +183,9 @@ body {
 
 
 .products{
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
     gap: 20px;
     padding: 20px;
 }
@@ -211,4 +213,17 @@ body {
 
 .product p{
     font-weight: bold;
+}
+
+#loadMoreBtn {
+    background-color: #5BBCD9;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 10px;
+    color: white;
+    font-family: "Marmelad", sans-serif;
+    cursor: pointer;
+    transition: 0.3s;
+    margin: 20px auto;
+    display: block;
 }

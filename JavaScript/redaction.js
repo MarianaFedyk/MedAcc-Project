@@ -1,3 +1,96 @@
+const searchBtn = document.querySelector('.div6 button');
+const searchInput = document.querySelector('.inputMed');
+
+let currentMedicine = null;
+
+searchBtn.addEventListener('click', async () => {
+    const name = searchInput.value.trim();
+
+    if (!name) return;
+
+    const res = await fetch(`http://localhost:3000/medicine?name=${name}`);
+    const medicine = await res.json();
+
+    if (!medicine) {
+        alert("Не знайдено");
+        return;
+    }
+
+    currentMedicine = medicine;
+    fillForm(medicine);
+});
+
+function fillForm(m) {
+    document.getElementById('categorySelect').value = m.categoryID;
+    document.getElementById('activeSubstances').value = m.activeSubstances;
+    document.getElementById('form').value = m.form;
+    document.getElementById('dosage').value = m.dosage;
+    document.getElementById('packQuantity').value = m.packQuantity;
+    document.getElementById('stockQuantity').value = m.stockQuantity;
+    document.getElementById('tradeName').value = m.tradeName;
+    document.getElementById('price').value = m.price;
+    document.getElementById('indications').value = m.indications;
+
+    const preview = document.getElementById('preview');
+    if (m.image) {
+        preview.src = m.image;
+        preview.style.display = 'block';
+    }
+    updatePhotoBlock(m.image);
+}
+
+const saveBtn = document.querySelector('.save');
+
+saveBtn.addEventListener('click', async () => {
+
+    const updated = getFormData();
+
+    const res = await fetch('http://localhost:3000/medicine', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updated)
+    });
+
+    const result = await res.json();
+
+    alert(result.message);
+});
+
+const deleteBtn = document.querySelector('.delete');
+
+deleteBtn.addEventListener('click', async () => {
+
+    const name = document.getElementById('tradeName').value;
+
+    if (!name) return;
+
+    const res = await fetch('http://localhost:3000/medicine', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ tradeName: name })
+    });
+
+    const result = await res.json();
+
+    alert(result.message);
+    resetForm();
+});
+
+function getFormData() {
+    return {
+        image: document.getElementById('preview')?.src || "",
+        categoryID: Number(document.getElementById('categorySelect').value),
+        activeSubstances: document.getElementById('activeSubstances').value,
+        form: document.getElementById('form').value,
+        dosage: document.getElementById('dosage').value,
+        packQuantity: document.getElementById('packQuantity').value,
+        stockQuantity: document.getElementById('stockQuantity').value,
+        tradeName: document.getElementById('tradeName').value,
+        price: Number(document.getElementById('price').value),
+        indications: document.getElementById('indications').value
+    };
+}
+
 document.addEventListener("DOMContentLoaded", () => {
 
     const elements = {
@@ -20,6 +113,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 
+function updatePhotoBlock(imageUrl) {
+    const preview = document.getElementById('preview');
+    const text = document.querySelector('#photoBlock span');
+
+    if (imageUrl) {
+        preview.src = imageUrl;
+        preview.style.display = 'block';
+
+        if (text) text.style.display = 'none'; // 🔥 ховаємо "Фото"
+    } else {
+        preview.src = '';
+        preview.style.display = 'none';
+
+        if (text) text.style.display = 'block'; // 🔥 показуємо назад
+    }
+}
+
 
 function initPopup({ photoBlock, popup, closeBtn, saveBtn, imgInput, preview, text }) {
 
@@ -36,9 +146,7 @@ function initPopup({ photoBlock, popup, closeBtn, saveBtn, imgInput, preview, te
             const url = imgInput.value.trim();
             if (!url) return;
 
-            preview.src = url;
-            preview.style.display = "block";
-            if (text) text.style.display = "none";
+            updatePhotoBlock(url);
 
             popup.classList.remove('active');
         };

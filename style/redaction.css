@@ -244,6 +244,22 @@ select:focus{
     transition: 0.3s;
 }
 
+.save{
+    background-color: #ffffff;
+    color: #5BBCD9;
+    border: 2px solid #5BBCD9;
+    padding: 15px 40px;
+    border-radius: 10px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.save:hover{
+    background-color: #5BBCD9;
+    color: white;
+}
+
 .delete:hover{
     background-color: #f27272;
 }

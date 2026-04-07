@@ -6,9 +6,9 @@
     "form": "Капсули",
     "dosage": "500мг",
     "packQuantity": "10",
-    "stockQuantity": "50",
+    "stockQuantity": "90",
     "tradeName": "Парацетамол",
-    "price": "80",
+    "price": 130,
     "indications": "Для зниження температури"
   },
   {
@@ -166,5 +166,89 @@
     "tradeName": "Супрастин",
     "price": 120,
     "indications": "Алергічні захворювання, такі як сезонний алергічний риніт; кон’юнктивіт; кропив’янка; дермографізм; контактний дерматит; аліментарна алергія; алергічні реакції, спричинені лікарськими засобами; алергія, спричинена укусом комах; свербіж."
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/575733c7-dc01-44a1-aeec-4283675f0922/1/img_0.webp?v=AAAAAAnh2lk",
+    "categoryID": 1,
+    "activeSubstances": "Бензокаїн і гепарин",
+    "form": "Мазь",
+    "dosage": "Бензокаїн: 40 мг/г, гепарин: 100 МО/г",
+    "packQuantity": "25г",
+    "stockQuantity": "120",
+    "tradeName": "Гепаринова мазь",
+    "price": 150,
+    "indications": "Профілактика та лікування тромбофлебіту поверхневих вен"
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/d4ee899d-7769-11ec-bace-0050569aacb6/1/img_0.webp?v=AAAAABE6nJk",
+    "categoryID": 2,
+    "activeSubstances": "Кальцію цитрат (кальцієві солі лимонної кислоти), магній, цинк, вітамін К2 (менахінон-7, МК-7), вітамін Д3 (холекальциферол)",
+    "form": "Порошок",
+    "dosage": "Кальцію цитрат (кальцієві солі лимонної кислоти): 2400мг, магній: 25мг, цинк: 3,75мг, вітамін К2 (менахінон-7, МК-7): 50мкг, вітамін Д3 (холекальциферол): 1000МО",
+    "packQuantity": "",
+    "stockQuantity": "150",
+    "tradeName": "Остеоцитрат",
+    "price": 320,
+    "indications": ""
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/22ce2de0-d25c-11ea-babd-0050569aacb6/1/img_0.webp?v=AAAAAAjZoX0",
+    "categoryID": 2,
+    "activeSubstances": "Омега-3 жирні кислоти",
+    "form": "Капсули",
+    "dosage": "1000мг",
+    "packQuantity": "120",
+    "stockQuantity": "240",
+    "tradeName": "Омега-3",
+    "price": 307,
+    "indications": ""
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/e36c8793-c804-11ea-babc-0050569aacb6/1/img_0.webp?v=AAAAAAzvgLM",
+    "categoryID": 6,
+    "activeSubstances": "",
+    "form": "Панчохи",
+    "dosage": "",
+    "packQuantity": "2",
+    "stockQuantity": "40",
+    "tradeName": "Панчохи компресійні",
+    "price": 610,
+    "indications": "В період пологів; Під час операцій (на нижніх кінцівках, черевній порожнині, кесаревому розтині, хребті); Після операцій на венах нижніх кінцівок"
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/d3b88fa3-528d-48d3-8050-09b0f3abc9d2/1/img_0.webp?v=AAAAABFGPkY",
+    "categoryID": 7,
+    "activeSubstances": "",
+    "form": "Інгалятор",
+    "dosage": "",
+    "packQuantity": "1",
+    "stockQuantity": "30",
+    "tradeName": "Інгалятор Gamma Effect Max",
+    "price": 1300,
+    "indications": ""
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/2ae62219-5f27-4b46-a14b-1a5fbb18e977/1/img_0.webp?v=AAAAAAosucM",
+    "categoryID": 6,
+    "activeSubstances": "",
+    "form": "Протектор",
+    "dosage": "",
+    "packQuantity": "1",
+    "stockQuantity": "50",
+    "tradeName": "Протектор на кісточку Foot Care",
+    "price": 260,
+    "indications": "Подагра; корекція вальгусної деформації великого пальця стопи (Hallux valgus); бурсит першого плеснофалангового суглоба."
+  },
+  {
+    "image": "https://root.cdntbl.com/img/goods/95236cf2-6b05-4511-af07-87ce465d3dd0/1/img_0.webp?v=AAAAABGstp0",
+    "categoryID": 5,
+    "activeSubstances": "",
+    "form": "Аспіратор",
+    "dosage": "",
+    "packQuantity": "1",
+    "stockQuantity": "10",
+    "tradeName": "Аспіратор назальний NoseFrida",
+    "price": 330,
+    "indications": ""
   }
 ]

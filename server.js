@@ -106,6 +106,59 @@ app.post('/login', (req, res) => {
   });
 });
 
+// 🔍 пошук по назві
+app.get('/medicine', (req, res) => {
+  const name = req.query.name;
+
+  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
+    if (err) return res.json(null);
+
+    const medicines = JSON.parse(data);
+
+    const medicine = medicines.find(m =>
+      m.tradeName.toLowerCase().includes(name.toLowerCase())
+    );
+
+    res.json(medicine || null);
+  });
+});
+
+app.put('/medicine', (req, res) => {
+  const updated = req.body;
+
+  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
+    let medicines = JSON.parse(data || "[]");
+
+    const index = medicines.findIndex(m =>
+      m.tradeName === updated.tradeName
+    );
+
+    if (index === -1) {
+      return res.status(404).json({ message: "Не знайдено" });
+    }
+
+    medicines[index] = updated;
+
+    fs.writeFile(DATA_FILE, JSON.stringify(medicines, null, 2), () => {
+      res.json({ message: "Оновлено" });
+    });
+  });
+});
+
+app.delete('/medicine', (req, res) => {
+  const { tradeName } = req.body;
+
+  fs.readFile(DATA_FILE, 'utf8', (err, data) => {
+    let medicines = JSON.parse(data || "[]");
+
+    medicines = medicines.filter(m => m.tradeName !== tradeName);
+
+    fs.writeFile(DATA_FILE, JSON.stringify(medicines, null, 2), () => {
+      res.json({ message: "Видалено" });
+    });
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`Сервер запущено: http://localhost:${PORT}`);
 });

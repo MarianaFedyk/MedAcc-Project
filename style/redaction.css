@@ -18,12 +18,20 @@ input:focus{
     grid-template-rows: 80px auto;
 }
 
-.div1 {
+.background {
     grid-area: 1 / 1 / 2 / 6;
     background-color: #5BBCD9;
 }
 
-.div3 {
+.stuff {
+    grid-area: 2 / 1 / 3 / 6;
+    background-color: #fff;
+    border-top-left-radius: 50px;
+    border-top-right-radius: 50px;
+    padding: 40px 60px;
+}
+
+.logo {
     position: absolute;
     top: 15px;
     left: 30px;
@@ -33,45 +41,38 @@ input:focus{
     font-size: 32px;
 }
 
-.div3 img {
+.logo img {
     width: 50px;
 }
 
-.div3 a {
+.logo a {
     text-decoration: none;
     color: white;
 }
 
-.div4 {
+.user {
     position: absolute;
     top: 15px;
     right: 30px;
 }
 
-.div4 img {
+.user img {
     width: 50px;
     transition: 0.3s;
 }
 
-.div4 img:hover {
+.user img:hover {
     opacity: 0.8;
 }
 
-.div2 {
-    grid-area: 2 / 1 / 3 / 6;
-    background-color: #fff;
-    border-top-left-radius: 50px;
-    border-top-right-radius: 50px;
-    padding: 40px 60px;
-}
 
-.div5 p {
+.tittle p {
     font-size: 36px;
     color: #5BBCD9;
     margin: 0 0 20px 0;
 }
 
-.div6 {
+.search {
     display: flex;
     align-items: center;
     gap: 20px;
@@ -99,7 +100,7 @@ input:focus{
     box-shadow: 0 0 10px #5BBCD9;
 }
 
-.div6 button {
+.search button {
     background-color: #5BBCD9;
     color: white;
     border: none;
@@ -110,7 +111,7 @@ input:focus{
     transition: 0.3s;
 }
 
-.div6 button:hover {
+.search button:hover {
     background-color: #6bcae6;
 }
 
@@ -120,7 +121,7 @@ input:focus{
     margin-bottom: 30px;
 }
 
-.div7 {
+.block-photo {
     width: 200px;
     height: 200px;
     border: 3px solid #5BBCD9;
@@ -129,15 +130,28 @@ input:focus{
     align-items: center;
     justify-content: center;
     overflow: hidden;
+    position: relative;
+    cursor: pointer;
 }
 
-.div7 img {
+.block-photo span {
+    display: inline-block;
+    transition: transform 0.3s ease;
+    color: #777;
+}
+
+.block-photo span:hover{
+    transform: scale(1.15);
+}
+
+.block-photo img {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    display: none;
 }
 
-.div8, .div9 {
+.characteristics-1, .characteristics-2 {
     flex: 1;
     border: 2px solid #5BBCD9;
     border-radius: 10px;
@@ -148,7 +162,7 @@ input:focus{
     gap: 8px;
 }
 
-.div8 label, .div9 label {
+.characteristics-1 label, .characteristics-2 label {
     font-size: 14px;
 }
 
@@ -184,7 +198,7 @@ select:focus{
     box-shadow: 0 0 3px #5BBCD9;
 }
 
-.div10 {
+.block-indications {
     border: 2px solid #5BBCD9;
     border-radius: 10px;
     padding: 20px;
@@ -195,7 +209,7 @@ select:focus{
     gap: 10px;
 }
 
-.div10 textarea {
+.block-indications textarea {
     height: 4vw;
     border: 1px solid #5BBCD9;
     border-radius: 10px;
@@ -206,13 +220,13 @@ select:focus{
     transition: 0.3s;
 }
 
-.div10 textarea:focus{
+.block-indications textarea:focus{
     outline: none;
     transform: scale(0.98);
     box-shadow: 0 0 3px #5BBCD9;
 }
 
-.div11 {
+.actions {
     display: flex;
     justify-content: flex-end;
     gap: 20px;
@@ -264,51 +278,22 @@ select:focus{
     background-color: #f27272;
 }
 
-.div7 {
-    width: 200px;
-    height: 200px;
-    border: 3px solid #5BBCD9;
-    border-radius: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    overflow: hidden;
-    position: relative;
-    cursor: pointer;
-}
-
-.div7 span {
-    display: inline-block;
-    transition: transform 0.3s ease;
-    color: #777;
-}
-
-.div7 span:hover{
-    transform: scale(1.15);
-}
-
-.div7 img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    display: none;
-}
-
 .popup {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0,0,0,0.4);
-    
-    display: flex;              
-    align-items: center;       
-    justify-content: center;   
-    
+
+    background: rgba(0, 0, 0, 0.4);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
     opacity: 0;
     pointer-events: none;
-    transition: 0.3s;
+    transition: 0.3s ease;
 }
 
 .popup.active {
@@ -317,32 +302,57 @@ select:focus{
 }
 
 .popup-content {
-    background: white;
+    background: #ffffff;
     padding: 25px;
     border-radius: 15px;
-    width: 300px;
-    text-align: center;
+    width: 320px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    gap: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.popup-content p {
+    color: #5BBCD9;
+    font-size: 16px;
+    font-weight: 500;
 }
 
 .popup-content input {
     width: 100%;
     padding: 10px;
-    margin-top: 10px;
+
     border: 1px solid #5BBCD9;
     border-radius: 8px;
+
+    outline: none;
+    transition: 0.2s;
+}
+
+.popup-content input:focus {
+    border-color: #3aa6c5;
 }
 
 .popup-buttons {
-    margin-top: 15px;
+    width: 100%;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
 }
 
 .popup-buttons button {
+    flex: 1;
     padding: 10px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: 0.2s;
 }
 
 #saveImg {
@@ -350,6 +360,15 @@ select:focus{
     color: white;
 }
 
+#saveImg:hover {
+    background-color: #6bcae6;
+}
+
 #closePopup {
-    background-color: #ccc;
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+#closePopup:hover {
+    background-color: #cfcfcf;
 }

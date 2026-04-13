@@ -1,14 +1,17 @@
 [
   {
-    "login": "test",
-    "password": "1234"
-  },
-  {
-    "login": "Mariana",
-    "password": "123"
+    "login": "admin",
+    "password": "12345678",
+    "isAdmin": true
   },
   {
     "login": "Mari",
-    "password": "1234"
+    "password": "Mariana1",
+    "isAdmin": false
+  },
+  {
+    "login": "Mariana",
+    "password": "123456789",
+    "isAdmin": false
   }
 ]

@@ -1,9 +1,10 @@
 const range = document.getElementById('priceRange');
 const minPrice = document.getElementById('minPrice');
 const productsContainer = document.getElementById('products');
-const buttons = document.querySelectorAll('.categories button');
 const searchInput = document.getElementById('searchInput');
 const loadMoreBtn = document.getElementById('loadMoreBtn');
+const categoriesContainer = document.getElementById('categories');
+const maxPriceSpan = document.querySelector('.price-range span:last-child');
 
 let visibleCount = 8; 
 const STEP = 4; 
@@ -11,6 +12,44 @@ const STEP = 4;
 let allMedicines = [];
 let activeCategory = null;
 let filteredMedicines = [];
+
+fetch('categories.json')
+    .then(res => res.json())
+    .then(categories => {
+        categoriesContainer.innerHTML = '';
+
+        categories.forEach(cat => {
+            const button = document.createElement('button');
+
+            button.textContent = `+${cat.name}`;
+            button.dataset.id = cat.id;
+
+            categoriesContainer.appendChild(button);
+        });
+    })
+    .catch(err => {
+        console.error('Помилка завантаження категорій:', err);
+    });
+
+categoriesContainer.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        const id = Number(e.target.dataset.id);
+
+        document.querySelectorAll('.categories button').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        if (activeCategory === id) {
+            activeCategory = null;
+        } else {
+            activeCategory = id;
+            e.target.classList.add('active');
+        }
+
+        visibleCount = 8;
+        applyFilters();
+    }
+});
 
 range.addEventListener('input', function () {
     minPrice.textContent = range.value;
@@ -88,22 +127,18 @@ async function loadMedicines() {
     const res = await fetch('http://localhost:3000/medicines');
     allMedicines = await res.json();
 
-    applyFilters(); 
+    const maxPriceValue = Math.max(...allMedicines.map(item => Number(item.price)));
+
+    range.max = maxPriceValue;
+
+    maxPriceSpan.textContent = maxPriceValue;
+
+    range.value = 300;
+
+    minPrice.textContent = range.value;
+    if (allMedicines.length === 0) return;
+
+    applyFilters();
 }
-
-buttons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        const id = Number(btn.dataset.id);
-
-        if (activeCategory === id) {
-            activeCategory = null;
-        } else {
-            activeCategory = id;
-        }
-
-        visibleCount = 8;
-        applyFilters();
-    });
-});
 
 loadMedicines();

@@ -5,21 +5,19 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const session = require('express-session');
 const path = require('path');
-const bcrypt = require('bcrypt'); // 🔥 ДОДАЛИ
+const bcrypt = require('bcrypt');
 const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
-// SUPABASE
 const supabase = createClient(
     process.env.SUPABASE_URL,
     process.env.SUPABASE_KEY
 );
 
-// MIDDLEWARE
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: '*', 
     credentials: true
 }));
 
@@ -32,14 +30,14 @@ app.use(session({
     saveUninitialized: false
 }));
 
+
 app.use(express.static(__dirname));
 
-// HOME
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-// ADMIN CHECK
+
 function requireAdmin(req, res, next) {
     if (!req.session.user || !req.session.user.isAdmin) {
         return res.status(403).json({ message: 'Доступ заборонено' });
@@ -47,9 +45,6 @@ function requireAdmin(req, res, next) {
     next();
 }
 
-//////////////////////////
-// MEDICINE (SUPABASE)
-//////////////////////////
 
 app.get('/medicines', async (req, res) => {
     const { data, error } = await supabase
@@ -90,11 +85,10 @@ app.post('/add-medicine', requireAdmin, async (req, res) => {
 
 app.put('/medicine/:id', requireAdmin, async (req, res) => {
     const { id } = req.params;
-    const updatedMedicine = req.body;
 
     const { error } = await supabase
         .from('medecine')
-        .update(updatedMedicine)
+        .update(req.body)
         .eq('id', id);
 
     if (error) return res.status(500).json({ message: error.message });
@@ -115,9 +109,6 @@ app.delete('/medicine/:id', requireAdmin, async (req, res) => {
     res.json({ message: 'Видалено!' });
 });
 
-//////////////////////////
-// CATEGORIES
-//////////////////////////
 
 app.get('/categories', async (req, res) => {
     const { data, error } = await supabase
@@ -129,13 +120,8 @@ app.get('/categories', async (req, res) => {
     res.json(data);
 });
 
-//////////////////////////
-// AUTH (FIXED)
-//////////////////////////
-
 const saltRounds = 10;
 
-// REGISTER 🔥
 app.post('/register', async (req, res) => {
     const { login, password } = req.body;
 
@@ -149,7 +135,6 @@ app.post('/register', async (req, res) => {
         return res.status(400).json({ message: 'Такий логін вже існує' });
     }
 
-    // 🔥 ХЕШУВАННЯ ПАРОЛЯ
     const password_hash = await bcrypt.hash(password, saltRounds);
 
     const { error } = await supabase
@@ -165,7 +150,6 @@ app.post('/register', async (req, res) => {
     res.json({ message: 'Реєстрація успішна' });
 });
 
-// LOGIN 🔥
 app.post('/login', async (req, res) => {
     const { login, password } = req.body;
 
@@ -179,7 +163,6 @@ app.post('/login', async (req, res) => {
         return res.status(401).json({ message: 'Неправильний логін або пароль' });
     }
 
-    // 🔥 ПЕРЕВІРКА ХЕША
     const isMatch = await bcrypt.compare(password, user.password_hash);
 
     if (!isMatch) {
@@ -199,7 +182,6 @@ app.post('/login', async (req, res) => {
     });
 });
 
-// CHECK AUTH
 app.get('/me', (req, res) => {
     if (!req.session.user) {
         return res.json({ isAuth: false });
@@ -211,8 +193,7 @@ app.get('/me', (req, res) => {
     });
 });
 
-//////////////////////////
 
-app.listen(PORT, () => {
-    console.log(`Сервер: http://localhost:${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
 });

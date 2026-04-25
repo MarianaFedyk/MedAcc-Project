@@ -5,17 +5,13 @@ const deleteBtn = document.querySelector('.delete');
 
 let currentMedicine = null;
 
-//////////////////////////
-// SEARCH (тепер правильно)
-//////////////////////////
 
 searchBtn?.addEventListener('click', async () => {
     const name = searchInput.value.trim();
     if (!name) return;
 
     try {
-        // беремо всі і шукаємо на фронті
-        const res = await fetch('http://localhost:3000/medicines');
+        const res = await fetch('http://192.168.1.7:3000/medicines');
         const medicines = await res.json();
 
         const medicine = medicines.find(m =>
@@ -27,7 +23,7 @@ searchBtn?.addEventListener('click', async () => {
             return;
         }
 
-        currentMedicine = medicine; // 🔥 тут зберігається id
+        currentMedicine = medicine; 
         fillForm(medicine);
 
     } catch (err) {
@@ -35,10 +31,6 @@ searchBtn?.addEventListener('click', async () => {
         alert("Помилка сервера");
     }
 });
-
-//////////////////////////
-// FILL FORM
-//////////////////////////
 
 function fillForm(m) {
     document.getElementById('categorySelect').value = String(m.category_id);
@@ -54,9 +46,6 @@ function fillForm(m) {
     updatePhotoBlock(m.image);
 }
 
-//////////////////////////
-// SAVE (FIXED)
-//////////////////////////
 
 saveBtn?.addEventListener('click', async () => {
     if (!currentMedicine) {
@@ -67,7 +56,7 @@ saveBtn?.addEventListener('click', async () => {
     try {
         const updated = getFormData();
 
-        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
+        const res = await fetch(`http://192.168.1.7:3000/medicine/${currentMedicine.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -83,9 +72,6 @@ saveBtn?.addEventListener('click', async () => {
     }
 });
 
-//////////////////////////
-// DELETE (FIXED)
-//////////////////////////
 
 deleteBtn?.addEventListener('click', async () => {
     if (!currentMedicine) {
@@ -94,7 +80,7 @@ deleteBtn?.addEventListener('click', async () => {
     }
 
     try {
-        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
+        const res = await fetch(`http://192.168.1.7:3000/medicine/${currentMedicine.id}`, {
             method: 'DELETE',
             credentials: 'include'
         });
@@ -111,9 +97,6 @@ deleteBtn?.addEventListener('click', async () => {
     }
 });
 
-//////////////////////////
-// FORM DATA
-//////////////////////////
 
 function getFormData() {
     return {
@@ -130,9 +113,6 @@ function getFormData() {
     };
 }
 
-//////////////////////////
-// INIT
-//////////////////////////
 
 document.addEventListener("DOMContentLoaded", () => {
     const elements = {
@@ -153,9 +133,6 @@ document.addEventListener("DOMContentLoaded", () => {
     initAddMedicine(elements);
 });
 
-//////////////////////////
-// IMAGE
-//////////////////////////
 
 function updatePhotoBlock(imageUrl) {
     const preview = document.getElementById('preview');
@@ -197,13 +174,10 @@ function resetImage(preview, text) {
     if (text) text.style.display = "block";
 }
 
-//////////////////////////
-// CATEGORIES
-//////////////////////////
 
 async function loadCategories(select) {
     try {
-        const res = await fetch('http://localhost:3000/categories');
+        const res = await fetch('http://192.168.1.7:3000/categories');
         const categories = await res.json();
 
         select.innerHTML = '<option value="">Оберіть категорію</option>';
@@ -220,16 +194,13 @@ async function loadCategories(select) {
     }
 }
 
-//////////////////////////
-// ADD
-//////////////////////////
 
 function initAddMedicine({ addBtn, preview, text }) {
     addBtn?.addEventListener('click', async () => {
         const medicineData = getFormData();
 
         try {
-            const res = await fetch('http://localhost:3000/add-medicine', {
+            const res = await fetch('http://192.168.1.7:3000/add-medicine', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -253,9 +224,6 @@ function initAddMedicine({ addBtn, preview, text }) {
     });
 }
 
-//////////////////////////
-// RESET
-//////////////////////////
 
 function resetForm() {
     document.querySelectorAll('input').forEach(i => i.value = '');

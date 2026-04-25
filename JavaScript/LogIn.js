@@ -12,19 +12,18 @@ form?.addEventListener('submit', async (e) => {
 
     errorBox.textContent = "";
 
-    // перевірка
     if (!login || !password) {
         errorBox.textContent = "Заповни всі поля";
         return;
     }
 
     try {
-        const res = await fetch('http://localhost:3000/login', {
+        const res = await fetch('http://192.168.1.7:3000/login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            credentials: 'include', // 🔥 важливо
+            credentials: 'include', 
             body: JSON.stringify({ login, password })
         });
 
@@ -35,11 +34,9 @@ form?.addEventListener('submit', async (e) => {
             return;
         }
 
-        // збереження (як у тебе було)
         localStorage.setItem('isAdmin', data.isAdmin);
         localStorage.setItem('userLogin', data.login);
 
-        // редірект
         window.location.href = 'index.html';
 
     } catch (err) {

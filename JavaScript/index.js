@@ -4,19 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
     setInterval(updateClock, 1000);
 });
 
-//////////////////////////
-// USER + ADMIN (FIXED)
-//////////////////////////
 
 async function initUser() {
     try {
-        const res = await fetch('http://localhost:3000/me', {
+        const res = await fetch('http://192.168.1.7:3000/me', {
             credentials: 'include'
         });
 
         const data = await res.json();
 
-        // іконка користувача
         if (data.isAuth) {
             const userIcon = document.getElementById('userIcon');
             if (userIcon) {
@@ -24,20 +20,15 @@ async function initUser() {
             }
         }
 
-        // адмін блоки
         if (!data.isAdmin) {
             hideAdminBlocks();
         }
 
     } catch (err) {
         console.error('Помилка авторизації:', err);
-        hideAdminBlocks(); // якщо щось пішло не так — ховаємо
+        hideAdminBlocks(); 
     }
 }
-
-//////////////////////////
-// HIDE ADMIN UI
-//////////////////////////
 
 function hideAdminBlocks() {
     const redaction = document.querySelector('.block-redaction');
@@ -49,9 +40,6 @@ function hideAdminBlocks() {
     if (lastActions) lastActions.style.display = 'none';
 }
 
-//////////////////////////
-// CLOCK
-//////////////////////////
 
 function updateClock() {
     const now = new Date();

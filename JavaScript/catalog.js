@@ -13,13 +13,9 @@ let allMedicines = [];
 let activeCategory = null;
 let filteredMedicines = [];
 
-//////////////////////////
-// LOAD CATEGORIES (FIXED)
-//////////////////////////
-
 async function loadCategories() {
     try {
-        const res = await fetch('http://localhost:3000/categories');
+        const res = await fetch('http://192.168.1.7:3000/categories');
         const categories = await res.json();
 
         categoriesContainer.innerHTML = '';
@@ -38,9 +34,6 @@ async function loadCategories() {
     }
 }
 
-//////////////////////////
-// CATEGORY CLICK
-//////////////////////////
 
 categoriesContainer.addEventListener('click', (e) => {
     if (e.target.tagName !== 'BUTTON') return;
@@ -62,9 +55,6 @@ categoriesContainer.addEventListener('click', (e) => {
     applyFilters();
 });
 
-//////////////////////////
-// RANGE
-//////////////////////////
 
 range.addEventListener('input', function () {
     minPrice.textContent = range.value;
@@ -75,9 +65,6 @@ range.addEventListener('input', function () {
     applyFilters();
 });
 
-//////////////////////////
-// RENDER
-//////////////////////////
 
 function renderProducts(items) {
     productsContainer.innerHTML = '';
@@ -107,27 +94,18 @@ function renderProducts(items) {
         visibleCount >= items.length ? "none" : "block";
 }
 
-//////////////////////////
-// LOAD MORE
-//////////////////////////
 
 loadMoreBtn.addEventListener('click', () => {
     visibleCount += STEP;
     renderProducts(filteredMedicines);
 });
 
-//////////////////////////
-// SEARCH
-//////////////////////////
 
 searchInput.addEventListener('input', () => {
     visibleCount = 8;
     applyFilters();
 });
 
-//////////////////////////
-// FILTERS
-//////////////////////////
 
 function applyFilters() {
     const maxPrice = Number(range.value);
@@ -151,13 +129,10 @@ function applyFilters() {
     renderProducts(filteredMedicines);
 }
 
-//////////////////////////
-// LOAD MEDICINES
-//////////////////////////
 
 async function loadMedicines() {
     try {
-        const res = await fetch('http://localhost:3000/medicines');
+        const res = await fetch('http://192.168.1.7:3000/medicines');
         allMedicines = await res.json();
 
         if (!allMedicines.length) return;
@@ -179,13 +154,10 @@ async function loadMedicines() {
     }
 }
 
-//////////////////////////
-// AUTH ICON (FIXED)
-//////////////////////////
 
 async function checkAuth() {
     try {
-        const res = await fetch('http://localhost:3000/me', {
+        const res = await fetch('http://192.168.1.7:3000/me', {
             credentials: 'include'
         });
 
@@ -200,9 +172,6 @@ async function checkAuth() {
     }
 }
 
-//////////////////////////
-// INIT
-//////////////////////////
 
 loadCategories();
 loadMedicines();

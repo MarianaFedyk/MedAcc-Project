@@ -9,19 +9,18 @@ form?.addEventListener("submit", async (e) => {
     const login = loginInput.value.trim();
     const password = passwordInput.value.trim();
 
-    // перевірка
     if (!login || !password) {
         alert("Заповни всі поля");
         return;
     }
 
     try {
-        const res = await fetch("http://localhost:3000/register", {
+        const res = await fetch("http://192.168.1.7:3000/register", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
-            credentials: "include", // 🔥 важливо для сесій
+            credentials: "include", 
             body: JSON.stringify({ login, password })
         });
 
@@ -34,7 +33,6 @@ form?.addEventListener("submit", async (e) => {
 
         alert(data.message);
 
-        // очистка форми
         loginInput.value = "";
         passwordInput.value = "";
 

@@ -110,3 +110,79 @@ justify-content: center;
 color:#5BBCD9;
 font-size: 2vw;
 }
+
+footer{
+    background-color: #5BBCD9;
+    color: white;
+    padding: 4% 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    font-family: "Marmelad", sans-serif;
+    gap: 15%;
+    margin-top: 20px;
+}
+.main-apps{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; 
+}
+.main-apps h2{
+    font-size: 3.8vh;
+    margin-bottom: 3%;
+    margin-left: 15%;
+}
+.apps{
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    grid-gap: 15px; 
+    justify-content: start;
+}
+.apps img{
+    width: 60px;  
+    height: 60px; 
+    border-radius: 10px; 
+    padding: 10px; 
+    box-sizing: border-box; 
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.apps img:hover{
+    transform: scale(1.1);
+}
+footer h3{
+    font-size: 2.2vh;
+    margin-bottom: 3%;
+    font-weight: normal;
+}
+footer p{
+    font-size: 2vh;
+    margin-bottom: 0%;
+    line-height: 1.4;
+}
+footer a{
+    text-decoration: none;
+    color: white;
+}
+.contacts div{
+    display: flex;
+    align-items: center; 
+    gap: 10px;
+    white-space: nowrap;
+}
+.contacts img{
+    width: 15%;
+    height: 15%;
+    flex-shrink: 0;
+}
+.time{
+    font-size: 18px;
+    font-family: "Marmelad", sans-serif; 
+    color: #ffffff; 
+    border-top: 1px solid #5BBCD9;
+    padding-top: 10px;
+    justify-content: row;
+}
+.parent footer{
+    grid-column: 1 / -1; 
+}

@@ -5,20 +5,29 @@ const deleteBtn = document.querySelector('.delete');
 
 let currentMedicine = null;
 
+//////////////////////////
+// SEARCH (тепер правильно)
+//////////////////////////
+
 searchBtn?.addEventListener('click', async () => {
     const name = searchInput.value.trim();
     if (!name) return;
 
     try {
-        const res = await fetch(`http://localhost:3000/medicine?name=${name}`);
-        const medicine = await res.json();
+        // беремо всі і шукаємо на фронті
+        const res = await fetch('http://localhost:3000/medicines');
+        const medicines = await res.json();
 
-        if (!medicine || medicine.error) {
+        const medicine = medicines.find(m =>
+            m.trade_name?.toLowerCase().trim() === name.toLowerCase().trim()
+        );
+
+        if (!medicine) {
             alert("Не знайдено");
             return;
         }
 
-        currentMedicine = medicine;
+        currentMedicine = medicine; // 🔥 тут зберігається id
         fillForm(medicine);
 
     } catch (err) {
@@ -27,25 +36,38 @@ searchBtn?.addEventListener('click', async () => {
     }
 });
 
+//////////////////////////
+// FILL FORM
+//////////////////////////
+
 function fillForm(m) {
-    document.getElementById('categorySelect').value = String(m.categoryID);
-    document.getElementById('activeSubstances').value = m.activeSubstances || "";
+    document.getElementById('categorySelect').value = String(m.category_id);
+    document.getElementById('active_substances').value = m.active_substances || "";
     document.getElementById('form').value = m.form || "";
     document.getElementById('dosage').value = m.dosage || "";
-    document.getElementById('packQuantity').value = m.packQuantity || "";
-    document.getElementById('stockQuantity').value = m.stockQuantity || "";
-    document.getElementById('tradeName').value = m.tradeName || "";
+    document.getElementById('pack_quantity').value = m.pack_quantity || "";
+    document.getElementById('stock_quantity').value = m.stock_quantity || "";
+    document.getElementById('trade_name').value = m.trade_name || "";
     document.getElementById('price').value = m.price || "";
     document.getElementById('indications').value = m.indications || "";
 
     updatePhotoBlock(m.image);
 }
 
+//////////////////////////
+// SAVE (FIXED)
+//////////////////////////
+
 saveBtn?.addEventListener('click', async () => {
+    if (!currentMedicine) {
+        alert("Спочатку знайди товар");
+        return;
+    }
+
     try {
         const updated = getFormData();
 
-        const res = await fetch('http://localhost:3000/medicine', {
+        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -61,27 +83,27 @@ saveBtn?.addEventListener('click', async () => {
     }
 });
 
+//////////////////////////
+// DELETE (FIXED)
+//////////////////////////
+
 deleteBtn?.addEventListener('click', async () => {
-    const name = document.getElementById('tradeName').value;
-    if (!name) return;
+    if (!currentMedicine) {
+        alert("Спочатку знайди товар");
+        return;
+    }
 
     try {
-        const res = await fetch('http://localhost:3000/medicine', {
-    method: 'DELETE',
-    headers: { 'Content-Type': 'application/json' },
-    credentials: 'include', // 🔥 ОБОВ’ЯЗКОВО
-    body: JSON.stringify({ tradeName: name })
-});
+        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
+            method: 'DELETE',
+            credentials: 'include'
+        });
 
         const result = await res.json();
         alert(result.message);
 
+        currentMedicine = null;
         resetForm();
-
-        // 🔥 додай це
-        const preview = document.getElementById('preview');
-        const text = document.querySelector('#photoBlock span');
-        resetImage(preview, text);
 
     } catch (err) {
         console.error(err);
@@ -89,23 +111,30 @@ deleteBtn?.addEventListener('click', async () => {
     }
 });
 
+//////////////////////////
+// FORM DATA
+//////////////////////////
+
 function getFormData() {
     return {
         image: document.getElementById('preview')?.src || "",
-        categoryID: Number(document.getElementById('categorySelect').value) || 0,
-        activeSubstances: document.getElementById('activeSubstances').value,
+        category_id: Number(document.getElementById('categorySelect').value) || 0,
+        active_substances: document.getElementById('active_substances').value,
         form: document.getElementById('form').value,
         dosage: document.getElementById('dosage').value,
-        packQuantity: document.getElementById('packQuantity').value,
-        stockQuantity: document.getElementById('stockQuantity').value,
-        tradeName: document.getElementById('tradeName').value,
+        pack_quantity: document.getElementById('pack_quantity').value,
+        stock_quantity: document.getElementById('stock_quantity').value,
+        trade_name: document.getElementById('trade_name').value,
         price: Number(document.getElementById('price').value) || 0,
         indications: document.getElementById('indications').value
     };
 }
 
-document.addEventListener("DOMContentLoaded", () => {
+//////////////////////////
+// INIT
+//////////////////////////
 
+document.addEventListener("DOMContentLoaded", () => {
     const elements = {
         photoBlock: document.getElementById('photoBlock'),
         popup: document.getElementById('popup'),
@@ -114,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
         imgInput: document.getElementById('imgInput'),
         preview: document.getElementById('preview'),
         text: document.querySelector('#photoBlock span'),
-
         addBtn: document.querySelector('.add'),
         categorySelect: document.getElementById('categorySelect')
     };
@@ -125,14 +153,15 @@ document.addEventListener("DOMContentLoaded", () => {
     initAddMedicine(elements);
 });
 
+//////////////////////////
+// IMAGE
+//////////////////////////
+
 function updatePhotoBlock(imageUrl) {
     const preview = document.getElementById('preview');
     const text = document.querySelector('#photoBlock span');
 
-    if (!imageUrl) {
-        resetImage(preview, text);
-        return;
-    }
+    if (!imageUrl) return resetImage(preview, text);
 
     preview.src = imageUrl;
     preview.style.display = 'block';
@@ -156,9 +185,9 @@ function initImagePreview({ preview, text }) {
     if (!preview) return;
 
     preview.onerror = () => {
-    if (!preview.src || preview.src === window.location.href) return;
-    alert("Неправильне посилання");
-    resetImage(preview, text);
+    if (preview.src) {
+        resetImage(preview, text);
+    }
 };
 }
 
@@ -168,19 +197,14 @@ function resetImage(preview, text) {
     if (text) text.style.display = "block";
 }
 
-async function loadCategories(select) {
-    if (!select) return;
+//////////////////////////
+// CATEGORIES
+//////////////////////////
 
+async function loadCategories(select) {
     try {
         const res = await fetch('http://localhost:3000/categories');
         const categories = await res.json();
-
-        console.log("Категорії:", categories); 
-
-        if (!Array.isArray(categories)) {
-            console.error("Невірний формат категорій");
-            return;
-        }
 
         select.innerHTML = '<option value="">Оберіть категорію</option>';
 
@@ -192,29 +216,30 @@ async function loadCategories(select) {
         });
 
     } catch (err) {
-        console.error("Помилка завантаження категорій:", err);
+        console.error(err);
     }
 }
 
-function initAddMedicine({ addBtn, categorySelect, preview, text }) {
-    if (!addBtn) return;
+//////////////////////////
+// ADD
+//////////////////////////
 
-    addBtn.addEventListener('click', async () => {
-
+function initAddMedicine({ addBtn, preview, text }) {
+    addBtn?.addEventListener('click', async () => {
         const medicineData = getFormData();
 
         try {
-            const response = await fetch('http://localhost:3000/add-medicine', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            credentials: 'include', // 🔥
-            body: JSON.stringify(medicineData)
-        });
+            const res = await fetch('http://localhost:3000/add-medicine', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify(medicineData)
+            });
 
-            const result = await response.json();
+            const result = await res.json();
 
-            if (response.ok) {
-                alert('Успішно збережено!');
+            if (res.ok) {
+                alert('Успішно додано!');
                 resetForm();
                 resetImage(preview, text);
             } else {
@@ -228,14 +253,14 @@ function initAddMedicine({ addBtn, categorySelect, preview, text }) {
     });
 }
 
+//////////////////////////
+// RESET
+//////////////////////////
 
 function resetForm() {
     document.querySelectorAll('input').forEach(i => i.value = '');
-    
-    const textarea = document.getElementById("indications");
-    if (textarea) textarea.value = '';
+    document.getElementById("indications").value = '';
 
-    // 🔥 очищаємо фото
     const preview = document.getElementById('preview');
     const text = document.querySelector('#photoBlock span');
     resetImage(preview, text);

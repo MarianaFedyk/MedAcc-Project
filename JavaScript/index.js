@@ -1,22 +1,72 @@
-document.addEventListener("DOMContentLoaded", async () => {
+document.addEventListener("DOMContentLoaded", () => {
+    initUser();
+    updateClock();
+    setInterval(updateClock, 1000);
+});
+
+//////////////////////////
+// USER + ADMIN (FIXED)
+//////////////////////////
+
+async function initUser() {
     try {
-        const res = await fetch('/me', {
+        const res = await fetch('http://localhost:3000/me', {
             credentials: 'include'
         });
 
         const data = await res.json();
 
-        const redaction = document.querySelector('.block-redaction');
-        const report = document.querySelector('.block-report');
-        const lastActions = document.querySelector('.block-LastActions');
+        // іконка користувача
+        if (data.isAuth) {
+            const userIcon = document.getElementById('userIcon');
+            if (userIcon) {
+                userIcon.src = 'data/user.png';
+            }
+        }
 
+        // адмін блоки
         if (!data.isAdmin) {
-            if (redaction) redaction.style.display = 'none';
-            if (report) report.style.display = 'none';
-            if (lastActions) lastActions.style.display = 'none';
+            hideAdminBlocks();
         }
 
     } catch (err) {
-        console.error(err);
+        console.error('Помилка авторизації:', err);
+        hideAdminBlocks(); // якщо щось пішло не так — ховаємо
     }
-});
+}
+
+//////////////////////////
+// HIDE ADMIN UI
+//////////////////////////
+
+function hideAdminBlocks() {
+    const redaction = document.querySelector('.block-redaction');
+    const report = document.querySelector('.block-report');
+    const lastActions = document.querySelector('.block-LastActions');
+
+    if (redaction) redaction.style.display = 'none';
+    if (report) report.style.display = 'none';
+    if (lastActions) lastActions.style.display = 'none';
+}
+
+//////////////////////////
+// CLOCK
+//////////////////////////
+
+function updateClock() {
+    const now = new Date();
+
+    const time = now.toLocaleTimeString('uk-UA', {
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+    });
+
+    const year = now.getFullYear();
+
+    const clockElement = document.getElementById('real-time-clock');
+
+    if (clockElement) {
+        clockElement.innerHTML = `${time} &nbsp; ${year}`;
+    }
+}

@@ -1,24 +1,45 @@
-document.getElementById("registerForm").addEventListener("submit", function(e) {
+const form = document.getElementById("registerForm");
+
+form?.addEventListener("submit", async (e) => {
     e.preventDefault();
 
-    const login = document.getElementById("login").value;
-    const password = document.getElementById("password").value;
+    const loginInput = document.getElementById("login");
+    const passwordInput = document.getElementById("password");
 
-    fetch("http://localhost:3000/register", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            login: login,
-            password: password
-        })
-    })
-    .then(res => res.json())
-    .then(data => {
+    const login = loginInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    // перевірка
+    if (!login || !password) {
+        alert("Заповни всі поля");
+        return;
+    }
+
+    try {
+        const res = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            credentials: "include", // 🔥 важливо для сесій
+            body: JSON.stringify({ login, password })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            alert(data.message || "Помилка реєстрації");
+            return;
+        }
+
         alert(data.message);
-    })
-    .catch(() => {
-        alert("Помилка з'єднання з сервером");
-    });
+
+        // очистка форми
+        loginInput.value = "";
+        passwordInput.value = "";
+
+    } catch (err) {
+        console.error(err);
+        alert("Сервер недоступний");
+    }
 });

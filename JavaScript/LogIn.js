@@ -1,34 +1,49 @@
-document.getElementById('loginForm').addEventListener('submit', function(e) {
+const form = document.getElementById('loginForm');
+
+form?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const login = document.getElementById('login').value.trim();
-    const password = document.getElementById('password').value.trim();
+    const loginInput = document.getElementById('login');
+    const passwordInput = document.getElementById('password');
+    const errorBox = document.getElementById('error');
 
-    fetch('/login', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json'
-    },
-    credentials: 'include', // 🔥 ОБОВ'ЯЗКОВО
-    body: JSON.stringify({ login, password })
-})
-    .then(res => {
+    const login = loginInput.value.trim();
+    const password = passwordInput.value.trim();
+
+    errorBox.textContent = "";
+
+    // перевірка
+    if (!login || !password) {
+        errorBox.textContent = "Заповни всі поля";
+        return;
+    }
+
+    try {
+        const res = await fetch('http://localhost:3000/login', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include', // 🔥 важливо
+            body: JSON.stringify({ login, password })
+        });
+
+        const data = await res.json();
+
         if (!res.ok) {
-            throw new Error('Неправильний логін або пароль');
+            errorBox.textContent = data.message || "Помилка входу";
+            return;
         }
-        return res.json();
-    })
-    .then(data => {
-        // 🔹 зберігаємо роль
-    localStorage.setItem('isAdmin', data.isAdmin);
 
-    // (опційно) можна зберегти логін
-    localStorage.setItem('userLogin', data.login);
+        // збереження (як у тебе було)
+        localStorage.setItem('isAdmin', data.isAdmin);
+        localStorage.setItem('userLogin', data.login);
 
-    window.location.href = 'index.html';
-    })
-    .catch(err => {
-        document.getElementById('error').textContent = err.message;
-    });
-    
+        // редірект
+        window.location.href = 'index.html';
+
+    } catch (err) {
+        console.error(err);
+        errorBox.textContent = "Сервер недоступний";
+    }
 });

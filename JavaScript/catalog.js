@@ -6,16 +6,22 @@ const loadMoreBtn = document.getElementById('loadMoreBtn');
 const categoriesContainer = document.getElementById('categories');
 const maxPriceSpan = document.querySelector('.price-range span:last-child');
 
-let visibleCount = 8; 
-const STEP = 4; 
+let visibleCount = 8;
+const STEP = 4;
 
 let allMedicines = [];
 let activeCategory = null;
 let filteredMedicines = [];
 
-fetch('categories.json')
-    .then(res => res.json())
-    .then(categories => {
+//////////////////////////
+// LOAD CATEGORIES (FIXED)
+//////////////////////////
+
+async function loadCategories() {
+    try {
+        const res = await fetch('http://localhost:3000/categories');
+        const categories = await res.json();
+
         categoriesContainer.innerHTML = '';
 
         categories.forEach(cat => {
@@ -26,30 +32,39 @@ fetch('categories.json')
 
             categoriesContainer.appendChild(button);
         });
-    })
-    .catch(err => {
-        console.error('Помилка завантаження категорій:', err);
-    });
+
+    } catch (err) {
+        console.error('Помилка категорій:', err);
+    }
+}
+
+//////////////////////////
+// CATEGORY CLICK
+//////////////////////////
 
 categoriesContainer.addEventListener('click', (e) => {
-    if (e.target.tagName === 'BUTTON') {
-        const id = Number(e.target.dataset.id);
+    if (e.target.tagName !== 'BUTTON') return;
 
-        document.querySelectorAll('.categories button').forEach(btn => {
-            btn.classList.remove('active');
-        });
+    const id = Number(e.target.dataset.id);
 
-        if (activeCategory === id) {
-            activeCategory = null;
-        } else {
-            activeCategory = id;
-            e.target.classList.add('active');
-        }
+    document.querySelectorAll('.categories button').forEach(btn => {
+        btn.classList.remove('active');
+    });
 
-        visibleCount = 8;
-        applyFilters();
+    if (activeCategory === id) {
+        activeCategory = null;
+    } else {
+        activeCategory = id;
+        e.target.classList.add('active');
     }
+
+    visibleCount = 8;
+    applyFilters();
 });
+
+//////////////////////////
+// RANGE
+//////////////////////////
 
 range.addEventListener('input', function () {
     minPrice.textContent = range.value;
@@ -60,10 +75,14 @@ range.addEventListener('input', function () {
     applyFilters();
 });
 
+//////////////////////////
+// RENDER
+//////////////////////////
+
 function renderProducts(items) {
     productsContainer.innerHTML = '';
 
-    if (items.length === 0) {
+    if (!items.length) {
         productsContainer.innerHTML = `<p>Нічого не знайдено</p>`;
         loadMoreBtn.style.display = "none";
         return;
@@ -77,36 +96,45 @@ function renderProducts(items) {
 
         card.innerHTML = `
             <img src="${medicine.image}" alt="">
-            <h3>${medicine.tradeName}</h3>
+            <h3>${medicine.trade_name}</h3>
             <p>${medicine.price} грн</p>
         `;
 
         productsContainer.appendChild(card);
     });
 
-    if (visibleCount >= items.length) {
-        loadMoreBtn.style.display = "none";
-    } else {
-        loadMoreBtn.style.display = "block";
-    }
+    loadMoreBtn.style.display =
+        visibleCount >= items.length ? "none" : "block";
 }
+
+//////////////////////////
+// LOAD MORE
+//////////////////////////
 
 loadMoreBtn.addEventListener('click', () => {
     visibleCount += STEP;
-    renderProducts(filteredMedicines); 
+    renderProducts(filteredMedicines);
 });
+
+//////////////////////////
+// SEARCH
+//////////////////////////
 
 searchInput.addEventListener('input', () => {
     visibleCount = 8;
     applyFilters();
 });
 
+//////////////////////////
+// FILTERS
+//////////////////////////
+
 function applyFilters() {
     const maxPrice = Number(range.value);
     const searchValue = searchInput.value.toLowerCase().trim();
 
     filteredMedicines = allMedicines.filter(item => {
-        const name = String(item.tradeName || "").toLowerCase();
+        const name = String(item.trade_name || "").toLowerCase();
 
         const matchesPrice = Number(item.price) <= maxPrice;
         const matchesSearch = name.includes(searchValue);
@@ -116,29 +144,66 @@ function applyFilters() {
 
     if (activeCategory !== null) {
         filteredMedicines = filteredMedicines.filter(item =>
-            Number(item.categoryID) === activeCategory
+            Number(item.category_id) === activeCategory
         );
     }
 
     renderProducts(filteredMedicines);
 }
 
+//////////////////////////
+// LOAD MEDICINES
+//////////////////////////
+
 async function loadMedicines() {
-    const res = await fetch('http://localhost:3000/medicines');
-    allMedicines = await res.json();
+    try {
+        const res = await fetch('http://localhost:3000/medicines');
+        allMedicines = await res.json();
 
-    const maxPriceValue = Math.max(...allMedicines.map(item => Number(item.price)));
+        if (!allMedicines.length) return;
 
-    range.max = maxPriceValue;
+        const maxPriceValue = Math.max(
+            ...allMedicines.map(item => Number(item.price) || 0)
+        );
 
-    maxPriceSpan.textContent = maxPriceValue;
+        range.max = maxPriceValue;
+        maxPriceSpan.textContent = maxPriceValue;
 
-    range.value = 300;
+        range.value = maxPriceValue;
+        minPrice.textContent = range.value;
 
-    minPrice.textContent = range.value;
-    if (allMedicines.length === 0) return;
+        applyFilters();
 
-    applyFilters();
+    } catch (err) {
+        console.error('Помилка товарів:', err);
+    }
 }
 
+//////////////////////////
+// AUTH ICON (FIXED)
+//////////////////////////
+
+async function checkAuth() {
+    try {
+        const res = await fetch('http://localhost:3000/me', {
+            credentials: 'include'
+        });
+
+        const data = await res.json();
+
+        if (data.isAuth) {
+            document.getElementById('userIcon').src = 'data/user.png';
+        }
+
+    } catch (err) {
+        console.error('Auth error:', err);
+    }
+}
+
+//////////////////////////
+// INIT
+//////////////////////////
+
+loadCategories();
 loadMedicines();
+checkAuth();

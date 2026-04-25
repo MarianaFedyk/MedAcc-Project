@@ -15,7 +15,7 @@ let filteredMedicines = [];
 
 async function loadCategories() {
     try {
-        const res = await fetch('http://192.168.1.7:3000/categories');
+        const res = await fetch('http://localhost:3000/categories');
         const categories = await res.json();
 
         categoriesContainer.innerHTML = '';
@@ -132,7 +132,7 @@ function applyFilters() {
 
 async function loadMedicines() {
     try {
-        const res = await fetch('http://192.168.1.7:3000/medicines');
+        const res = await fetch('http://localhost:3000/medicines');
         allMedicines = await res.json();
 
         if (!allMedicines.length) return;
@@ -157,7 +157,7 @@ async function loadMedicines() {
 
 async function checkAuth() {
     try {
-        const res = await fetch('http://192.168.1.7:3000/me', {
+        const res = await fetch('http://localhost:3000/me', {
             credentials: 'include'
         });
 

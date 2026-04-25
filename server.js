@@ -196,4 +196,5 @@ app.get('/me', (req, res) => {
 
 app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
+    console.log(`Access the server at http://localhost:${PORT}`);
 });

@@ -11,7 +11,7 @@ searchBtn?.addEventListener('click', async () => {
     if (!name) return;
 
     try {
-        const res = await fetch('http://192.168.1.7:3000/medicines');
+        const res = await fetch('http://localhost:3000/medicines');
         const medicines = await res.json();
 
         const medicine = medicines.find(m =>
@@ -56,7 +56,7 @@ saveBtn?.addEventListener('click', async () => {
     try {
         const updated = getFormData();
 
-        const res = await fetch(`http://192.168.1.7:3000/medicine/${currentMedicine.id}`, {
+        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             credentials: 'include',
@@ -80,7 +80,7 @@ deleteBtn?.addEventListener('click', async () => {
     }
 
     try {
-        const res = await fetch(`http://192.168.1.7:3000/medicine/${currentMedicine.id}`, {
+        const res = await fetch(`http://localhost:3000/medicine/${currentMedicine.id}`, {
             method: 'DELETE',
             credentials: 'include'
         });
@@ -177,7 +177,7 @@ function resetImage(preview, text) {
 
 async function loadCategories(select) {
     try {
-        const res = await fetch('http://192.168.1.7:3000/categories');
+        const res = await fetch('http://localhost:3000/categories');
         const categories = await res.json();
 
         select.innerHTML = '<option value="">Оберіть категорію</option>';
@@ -200,7 +200,7 @@ function initAddMedicine({ addBtn, preview, text }) {
         const medicineData = getFormData();
 
         try {
-            const res = await fetch('http://192.168.1.7:3000/add-medicine', {
+            const res = await fetch('http://localhost:3000/add-medicine', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',

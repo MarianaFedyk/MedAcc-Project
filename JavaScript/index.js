@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function initUser() {
     try {
-        const res = await fetch('http://192.168.1.7:3000/me', {
+        const res = await fetch('http://localhost:3000/me', {
             credentials: 'include'
         });
 
